@@ -1,6 +1,7 @@
 use crate::ast::*;
 use std::cmp::max;
 use std::collections::HashMap;
+use itertools::Itertools;
 
 /// Find the maximum number of expression in a print statement
 fn maxargs(statement: &Statement) -> usize {
@@ -47,7 +48,6 @@ fn interp_statement(
                 .iter()
                 .map(|e| interp_expr(&e, symbols, output))
                 .map(|n| n.to_string())
-                .collect::<Vec<String>>()
                 .join(", ");
 
             output.push(res);
