@@ -1,5 +1,6 @@
 type Id = String;
 
+#[derive(Debug)]
 pub enum BinaryOp {
     Plus,
     Minus,
@@ -7,12 +8,14 @@ pub enum BinaryOp {
     Div,
 }
 
+#[derive(Debug)]
 pub enum Statement {
     Compound(Box<Statement>, Box<Statement>),
     Assign(Id, Box<Expression>),
     Print(Vec<Box<Expression>>),
 }
 
+#[derive(Debug)]
 pub enum Expression {
     Identifier(Id),
     Num(i64),

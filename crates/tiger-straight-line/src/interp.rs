@@ -47,7 +47,8 @@ fn interp_statement(
                 .iter()
                 .map(|e| interp_expr(&e, symbols, output))
                 .map(|n| n.to_string())
-                .collect::<String>();
+                .collect::<Vec<String>>()
+                .join(", ");
 
             output.push(res);
         }
@@ -64,7 +65,7 @@ fn interp_expr(
         Expression::Num(n) => *n,
         Expression::Op(l, op, r) => {
             let left_value = interp_expr(l, symbols, output);
-            let right_value = interp_expr(l, symbols, output);
+            let right_value = interp_expr(r, symbols, output);
             match op {
                 BinaryOp::Plus => left_value + right_value,
                 BinaryOp::Minus => left_value - right_value,
@@ -133,6 +134,6 @@ mod tests {
     fn interp_on_prog() {
         let mut output = Vec::new();
         interp_statement(&prog(), &mut HashMap::new(), &mut output);
-        assert_eq!(output, vec!["8 7", "80"])
+        assert_eq!(output, vec!["8, 7", "80"])
     }
 }
