@@ -1,0 +1,35 @@
+use std::str::FromStr;
+use crate::ast;
+
+grammar;
+
+pub Program: ast::Program = {
+    <Expr> => ast::Program{ expr : <> }
+}
+
+LValue: ast::LValue = {
+    Id => ast::LValue::Id(<>),
+    <lval:LValue> "." <id:Id> => ast::LValue::Record(Box::new(lval), id),
+    <lval:LValue> "[" <e:Expr> "]" => ast::LValue::Array(Box::new(lval), Box::new(e)),
+}
+
+Expr: ast::Expr = {
+    LValue => ast::Expr::LValueExpr(<>),
+    r"[0-9]+" => ast::Expr::NumberLiteral(i32::from_str(<>).unwrap()),
+}
+
+// TypeFields = Comma<TypeField>;
+
+Comma<T>: Vec<T> = { // (1)
+    <mut v:(<T> ",")*> <e:T?> => match e { // (2)
+        None => v,
+        Some(e) => {
+            v.push(e);
+            v
+        }
+    }
+};
+
+Id: String = {
+  r"[a-zA-z][a-zA-Z0-9]*" => <>.to_string()
+};
